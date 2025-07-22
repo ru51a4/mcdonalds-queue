@@ -203,7 +203,7 @@
         </div>
         @yield('content')
         <footer class="pt-3 text-muted border-top">
-            superwebteam &copy; 2021
+            ru51a4 &copy; 2025
         </footer>
     </div>
     <!-- Modal -->

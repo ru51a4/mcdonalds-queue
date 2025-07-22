@@ -2,10 +2,12 @@
 
 @section('content')
     <div class="row">
-        <div>
-            Статус Сотрудника - <span style="color:red;">На работе</span>
-            <button class="btn-primary btn">Поменять статус</button>
-        </div>
+        <!--
+                <div>
+                    Статус Сотрудника - <span style="color:red;">На работе</span>
+                    <button class="btn-primary btn">Поменять статус</button>
+                </div>
+                -->
     </div>
     <div class="row mt-4">
         <div>

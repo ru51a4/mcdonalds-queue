@@ -28,7 +28,7 @@
             <div class="row mt-5">
                 @foreach ($tasks_currrent as $task)
                     <div>
-                        <h4>{{ $task->uuid }} - Сотрудник({{ $task->user_id }}) </h4>
+                        <h4>{{ $task->uuid }} - Сотрудник({{ $task->user->name }}) </h4>
                     </div>
                 @endforeach
             </div>
