@@ -47,7 +47,7 @@ class User extends Authenticatable implements JWTSubject
     
     public function type()
     {
-        return $this->belongsToMany("\App\Models\TypeTask", "users_type_task");
+        return $this->belongsToMany("\App\Models\TypeTask", "users_type_task", 'users_id');
     }
 
     public function taskss()

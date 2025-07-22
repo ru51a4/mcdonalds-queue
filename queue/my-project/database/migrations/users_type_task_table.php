@@ -18,9 +18,9 @@ return new class extends Migration
         Schema::create("users_type_task", function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("users_id");
-            $table->unsignedBigInteger("type_id");
+            $table->unsignedBigInteger("type_task_id");
             $table->foreign("users_id")->references("id")->on("users");
-            $table->foreign("type_id")->references("id")->on("type");
+            $table->foreign("type_task_id")->references("id")->on("type_task");
         });
     }
 

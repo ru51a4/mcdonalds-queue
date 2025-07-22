@@ -31,6 +31,13 @@ Route::get('/new/{id}', [App\Http\Controllers\IndexController::class, 'new']);
 Route::group(['middleware' => ['auth']], function () {
 Route::get('/home/', [App\Http\Controllers\IndexController::class, 'index']);
 Route::get('/shift/', [App\Http\Controllers\IndexController::class, 'shiftTask']);
+Route::get('/leave/', [App\Http\Controllers\IndexController::class, 'leave']);
+Route::get('/setting/', [App\Http\Controllers\IndexController::class, 'setting']);
+Route::get('/delete/{task}', [App\Http\Controllers\IndexController::class, 'delete']);
+Route::get('/toggle/{task}', [App\Http\Controllers\IndexController::class, 'toggle']);
+
+Route::post('/add', [App\Http\Controllers\IndexController::class, 'add']);
+
 });
 
 Route::get('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout']);

@@ -23,7 +23,7 @@ class TypeTask extends Model
 
     public function taskss()
     {
-        return $this->hasMany("\App\Models\Tasks");
+        return $this->hasMany("\App\Models\Tasks", 'type');
     }
 
 }
