@@ -23,8 +23,8 @@ class IndexController extends Controller
     {
         $tasks = \App\Models\Tasks::where(['status' => 1, 'user_id' => \Auth::user()->id])->get();
         $t = $tasks[0] ?? null;
-        
-        return view('home', compact('t'));
+        $disabled = \App\Models\Tasks::where(['status' => 0])->count() == 0;        
+        return view('home', compact('t', 'disabled'));
     }  
     public function dashboard()
     {
@@ -45,7 +45,7 @@ class IndexController extends Controller
         }
         $tasks = \App\Models\Tasks::where(['status' => 0])->get();
         if(!count($tasks)){
-         return redirect('index');        
+         return redirect('home');        
         }
         $tasks[0]->user_id = \Auth::user()->id;
         $tasks[0]->status = 1;
