@@ -87,7 +87,7 @@ class IndexController extends Controller
 
     public function new($id)
     {
-        $generateMcDonaldCode = function ($length = 6) {
+        $generateMcDonaldCode = function ($length = 4) {
         $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);
         $code = '';
