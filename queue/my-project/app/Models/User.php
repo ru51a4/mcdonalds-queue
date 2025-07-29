@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -44,7 +43,7 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
     ];
 
-    
+
     public function type()
     {
         return $this->belongsToMany("\App\Models\TypeTask", "users_type_task", 'users_id');
@@ -54,7 +53,7 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany("\App\Models\Tasks");
     }
-    
+
     public function getJWTIdentifier()
     {
         return $this->getKey();
@@ -63,5 +62,12 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function getTypeTaskIds()
+    {
+        return $this->type->map(function($d){
+            return $d->id;
+        });
     }
 }

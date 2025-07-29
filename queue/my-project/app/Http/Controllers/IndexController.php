@@ -12,77 +12,88 @@ class IndexController extends Controller
 {
 
     /**
-     * Show the application dashboard.
-     *
-     * @return Responsable
+     * Страница ЛК сотрудника
      */
     public function index()
     {
-        $ids = [];
-        foreach (Auth::user()->type as $t) {
-            $ids[] = $t->id;
-        }
-        $tasks = Tasks::where(['status' => 1, 'user_id' => Auth::user()->id])->whereIn('type', $ids)->get();
-        $t = $tasks[0] ?? null;
-        $disabled = Tasks::where(['status' => 0])->whereIn('type', $ids)->count() == 0;
+        $tasks = Tasks::where(['status' => 1, 'user_id' => Auth::user()->id])
+            ->whereIn('type', Auth::user()->getTypeTaskIds())
+            ->first();
+        $t = $tasks ?? null;
+        $disabled = !Tasks::where(['status' => 0])
+            ->whereIn('type', Auth::user()->getTypeTaskIds())
+            ->exists();
         return view('home', compact('t', 'disabled'));
     }
 
+    /**
+     * Страница Дешбоард
+     */
     public function dashboard()
     {
-        $tasks = Tasks::where(['status' => 0])->get();
-        $tasks_currrent = Tasks::where(['status' => 1])->get();
+        $tasks = Tasks::where(['status' => 0])
+            ->get();
+        $tasks_currrent = Tasks::where(['status' => 1])
+            ->get();
 
         return view('dashboard', compact('tasks', 'tasks_currrent'));
     }
 
+    /**
+     * Контроллер - закончить текущий талон && получить следующий талон
+     */
     public function shiftTask()
     {
-        $ids = [];
-        foreach (Auth::user()->type as $t) {
-            $ids[] = $t->id;
+        $tasks = Tasks::where(['status' => 1, 'user_id' => \Auth::user()->id])
+            ->whereIn('type', Auth::user()->getTypeTaskIds())
+            ->first();
+        if ($tasks) {
+            $tasks->user_id = Auth::user()->id;
+            $tasks->status = 2;
+            $tasks->save();
         }
-        $tasks = Tasks::where(['status' => 1, 'user_id' => \Auth::user()->id])->whereIn('type', $ids)->get();
-        if (count($tasks)) {
-            $tasks[0]->user_id = Auth::user()->id;
-            $tasks[0]->status = 2;
-            $tasks[0]->save();
-
-        }
-        $tasks = Tasks::where(['status' => 0])->whereIn('type', $ids)->get();
-        if (!count($tasks)) {
+        $tasks = Tasks::where(['status' => 0])
+            ->whereIn('type', Auth::user()->getTypeTaskIds())
+            ->first();
+        if (!$tasks) {
             return redirect('home');
         }
-        $tasks[0]->user_id = Auth::user()->id;
-        $tasks[0]->status = 1;
-        $tasks[0]->save();
+        $tasks->user_id = Auth::user()->id;
+        $tasks->status = 1;
+        $tasks->save();
 
         return redirect('home');
     }
 
+    /**
+     * Ручка - закончить текущий талон.
+     */
     public function leave()
     {
-        $ids = [];
-        foreach (Auth::user()->type as $t) {
-            $ids[] = $t->id;
-        }
-        $tasks = Tasks::where(['status' => 1, 'user_id' => Auth::user()->id])->whereIn('type', $ids)->get();
-        if (count($tasks)) {
-            $tasks[0]->user_id = Auth::user()->id;
-            $tasks[0]->status = 2;
-            $tasks[0]->save();
+        $tasks = Tasks::where(['status' => 1, 'user_id' => Auth::user()->id])
+            ->whereIn('type', Auth::user()->getTypeTaskIds())
+            ->first();
+        if ($tasks) {
+            $tasks->user_id = Auth::user()->id;
+            $tasks->status = 2;
+            $tasks->save();
         }
 
         return redirect('home');
     }
 
+    /**
+     * Страница Взять талон
+     */
     public function gget()
     {
         $tasks = TypeTask::all();
         return view('gget', compact('tasks'));
     }
 
-
+    /**
+     * Ручка - создания талона
+     */
     public function new($id)
     {
         $task = new Tasks();
@@ -93,6 +104,9 @@ class IndexController extends Controller
         return view('code', ['code' => $task->uuid]);
     }
 
+    /**
+     * Страница Настройки
+     */
     public function setting()
     {
         $tasks = TypeTask::all();
@@ -104,6 +118,9 @@ class IndexController extends Controller
         return view('setting', compact('tasks', 't'));
     }
 
+    /**
+     * Ручка создать тип талонов
+     */
     public function add(Request $request)
     {
         $task = new TypeTask();
@@ -112,13 +129,20 @@ class IndexController extends Controller
         return redirect('setting');
     }
 
+    /**
+     * Ручка - переключения возможности обработки типа талона сотрудником
+     */
     public function toggle(TypeTask $task)
     {
-        Auth::user()->type()->toggle($task);
+        Auth::user()
+            ->type()
+            ->toggle($task);
         return redirect('setting');
     }
 
-
+    /**
+     * Ручка удаления типа талона
+     */
     public function delete(TypeTask $task)
     {
         foreach ($task->taskss as $t) {
