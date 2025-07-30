@@ -6,8 +6,8 @@ use App\Service\functions;
 use Auth;
 use App\Models\Tasks;
 use App\Models\TypeTask;
-use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Request;
+
 class IndexController extends Controller
 {
 
@@ -40,7 +40,43 @@ class IndexController extends Controller
     }
 
     /**
-     * Контроллер - закончить текущий талон && получить следующий талон
+     * Страница Взять талон
+     */
+    public function gget()
+    {
+        $tasks = TypeTask::all();
+        return view('gget', compact('tasks'));
+    }
+
+    /**
+     * Страница - создания талона
+     */
+    public function new($id)
+    {
+        $task = new Tasks();
+        $task->type = $id;
+        $task->uuid = functions::generateMcDonaldCode();
+        $task->status = 0;
+        $task->save();
+        return view('code', ['code' => $task->uuid]);
+    }
+
+    /**
+     * Страница Настройки
+     */
+    public function setting()
+    {
+        $tasks = TypeTask::all();
+        $tt = Auth::user()->type;
+        $t = [];
+        foreach ($tt as $item) {
+            $t[$item->id] = true;
+        }
+        return view('setting', compact('tasks', 't'));
+    }
+
+    /**
+     * Ручка - закончить текущий талон && получить следующий талон
      */
     public function shiftTask()
     {
@@ -80,42 +116,6 @@ class IndexController extends Controller
         }
 
         return redirect('home');
-    }
-
-    /**
-     * Страница Взять талон
-     */
-    public function gget()
-    {
-        $tasks = TypeTask::all();
-        return view('gget', compact('tasks'));
-    }
-
-    /**
-     * Страница - создания талона
-     */
-    public function new($id)
-    {
-        $task = new Tasks();
-        $task->type = $id;
-        $task->uuid = functions::generateMcDonaldCode();
-        $task->status = 0;
-        $task->save();
-        return view('code', ['code' => $task->uuid]);
-    }
-
-    /**
-     * Страница Настройки
-     */
-    public function setting()
-    {
-        $tasks = TypeTask::all();
-        $tt = Auth::user()->type;
-        $t = [];
-        foreach ($tt as $item) {
-            $t[$item->id] = true;
-        }
-        return view('setting', compact('tasks', 't'));
     }
 
     /**
