@@ -92,7 +92,7 @@ class IndexController extends Controller
     }
 
     /**
-     * Ручка - создания талона
+     * Страница - создания талона
      */
     public function new($id)
     {
